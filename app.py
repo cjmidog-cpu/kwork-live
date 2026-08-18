@@ -5,16 +5,23 @@ from datetime import datetime
 from dataclasses import dataclass, field
 from playwright.async_api import async_playwright
 
+import subprocess, sys, os
+os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/tmp/ms-playwright"
+
+# Устанавливаем браузер один раз при старте
+try:
+    subprocess.run(
+        [sys.executable, "-m", "playwright", "install", "chromium"],
+        check=False,
+        capture_output=True
+    )
+except Exception:
+    pass
+
+
 import subprocess, sys
 
-def ensure_playwright():
-    try:
-        from playwright.sync_api import sync_playwright
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            browser.close()
-    except Exception:
-        subprocess.run([sys.executable, "-m", "playwright", "install", "chromium"], check=False)
+
 
 
 
