@@ -3,7 +3,18 @@ import asyncio, re, json
 from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass, field
-from playwright.async_api import async_playwright
+from playwright.async_api import async_playwright\n
+import subprocess, sys
+
+def ensure_playwright():
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            p.chromium.launch(headless=True).close()
+    except Exception:
+        subprocess.run([sys.executable, "-m", "playwright", "install", "chromium"], check=False)
+
+
 
 st.set_page_config(page_title="Kwork Live", page_icon="⚡", layout="wide", initial_sidebar_state="collapsed")
 
