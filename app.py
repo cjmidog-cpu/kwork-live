@@ -100,17 +100,22 @@ def score(title, desc):
     return len(set(matched)), groups
 
 @st.cache_data(ttl=60, show_spinner=False)
-def parse_cached(pages=6):
+def parse_cached(pages=3):
     return asyncio.run(parse(pages))
 
-async def parse(pages=6):
+async def parse(pages=3):
     projects = []
     seen_ids = set()
     async with async_playwright() as p:
         browser = await p.chromium.launch(
-            
             headless=True,
-            args=["--disable-images", "--disable-gpu", "--no-sandbox"]
+            args=[
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--single-process",
+                "--disable-extensions",
+            ]
         )
         context = await browser.new_context(
             user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -208,8 +213,8 @@ with f3:
 with f4:
     f_design = st.checkbox("Дизайн / Figma", value=False)
 
-with st.spinner("Сканирую 6 страниц биржи..."):
-    projects = parse_cached(pages=6)
+with st.spinner("Сканирую 3 страницы биржи..."):
+    projects = parse_cached(pages=3)
 
 projects.sort(key=lambda x: (x.score, x.price_num), reverse=True)
 
