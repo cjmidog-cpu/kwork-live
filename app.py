@@ -3,7 +3,8 @@ import asyncio, re, json
 from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass, field
-from playwright.async_api import async_playwright\n
+from playwright.async_api import async_playwright
+
 import subprocess, sys
 
 def ensure_playwright():
