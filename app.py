@@ -11,7 +11,8 @@ def ensure_playwright():
     try:
         from playwright.sync_api import sync_playwright
         with sync_playwright() as p:
-            p.chromium.launch(headless=True).close()
+            browser = p.chromium.launch(headless=True)
+            browser.close()
     except Exception:
         subprocess.run([sys.executable, "-m", "playwright", "install", "chromium"], check=False)
 
