@@ -106,29 +106,24 @@ def score(title, desc):
             groups.append(g)
     return len(set(matched)), groups
 
-@st.cache_data(ttl=60, show_spinner=False)
-def parse_cached(pages=3):
-    return asyncio.run(parse(pages))
-
 async def parse(pages=3):
     projects = []
     seen_ids = set()
     async with async_playwright() as p:
-       browser = await p.chromium.launch(
-    headless=True,
-    args=[
-        "--no-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-        "--disable-software-rasterizer",
-        "--single-process",
-        "--no-zygote",
-        "--disable-extensions",
-        "--disable-background-networking",
-        "--disable-default-apps",
-        "--mute-audio",
-    ]
-)
+        browser = await p.chromium.launch(
+            headless=True,
+            args=[
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--disable-software-rasterizer",
+                "--single-process",
+                "--no-zygote",
+                "--disable-extensions",
+                "--disable-background-networking",
+                "--disable-default-apps",
+                "--mute-audio",
+            ]
         )
         context = await browser.new_context(
             user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
