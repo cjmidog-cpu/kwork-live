@@ -106,9 +106,9 @@ def score(title, desc):
             groups.append(g)
     return len(set(matched)), groups
 @st.cache_data(ttl=60, show_spinner=False)
-def parse_cached(pages=3):
+def parse_cached(pages=6):
     return asyncio.run(parse(pages))
-async def parse(pages=3):
+async def parse(pages=6):
     projects = []
     seen_ids = set()
     async with async_playwright() as p:
@@ -223,8 +223,8 @@ with f3:
 with f4:
     f_design = st.checkbox("Дизайн / Figma", value=False)
 
-with st.spinner("Сканирую 3 страницы биржи..."):
-    projects = parse_cached(pages=3)
+with st.spinner("Сканирую 6 страниц биржи..."):
+    projects = parse_cached(pages=6)
 
 projects.sort(key=lambda x: (x.score, x.price_num), reverse=True)
 
