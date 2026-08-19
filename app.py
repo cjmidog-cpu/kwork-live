@@ -105,7 +105,9 @@ def score(title, desc):
             matched += found
             groups.append(g)
     return len(set(matched)), groups
-
+@st.cache_data(ttl=60, show_spinner=False)
+def parse_cached(pages=3):
+    return asyncio.run(parse(pages))
 async def parse(pages=3):
     projects = []
     seen_ids = set()
