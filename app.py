@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from playwright.async_api import async_playwright
 
 import subprocess, sys, os
-os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/tmp/ms-playwright"
+
 
 # Устанавливаем браузер один раз при старте
 try:
@@ -20,6 +20,13 @@ except Exception:
 
 
 import subprocess, sys
+import os
+import subprocess
+
+# Устанавливаем Chromium для Playwright (только если ещё не установлен)
+if not os.path.exists(os.path.expanduser("~/.cache/ms-playwright")):
+    print("Installing Playwright browsers...")
+    subprocess.run(["playwright", "install", "chromium"], check=False)
 
 
 
@@ -107,15 +114,21 @@ async def parse(pages=3):
     projects = []
     seen_ids = set()
     async with async_playwright() as p:
-        browser = await p.chromium.launch(
-            headless=True,
-            args=[
-                "--no-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu",
-                "--single-process",
-                "--disable-extensions",
-            ]
+       browser = await p.chromium.launch(
+    headless=True,
+    args=[
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--disable-software-rasterizer",
+        "--single-process",
+        "--no-zygote",
+        "--disable-extensions",
+        "--disable-background-networking",
+        "--disable-default-apps",
+        "--mute-audio",
+    ]
+)
         )
         context = await browser.new_context(
             user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
